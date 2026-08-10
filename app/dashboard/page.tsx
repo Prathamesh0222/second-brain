@@ -2,10 +2,10 @@
 
 import { ContentArea } from "@/components/ContentArea";
 import { Sidebar } from "@/components/Sidebar";
-import { useState } from "react";
+import { useContentState } from "@/store/contentState";
 
 export default function Dashboard() {
-  const [currentFilter, setCurrentFilter] = useState<string>("dashboard");
+  const { currentFilter, setCurrentFilter } = useContentState();
 
   return (
     <div className="flex h-screen">

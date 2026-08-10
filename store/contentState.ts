@@ -15,6 +15,8 @@ interface ContentStateProps {
   type: ContentType;
   searchQuery: string;
   tags: string[];
+  currentFilter: string;
+  isCreateContentOpen: boolean;
   setIsPreview: (e: string) => void;
   setTitle: (e: string) => void;
   setDescription: (e: string) => void;
@@ -22,6 +24,8 @@ interface ContentStateProps {
   setType: (e: ContentType) => void;
   setTags: (e: string[]) => void;
   setSearchQuery: (e: string) => void;
+  setCurrentFilter: (e: string) => void;
+  setIsCreateContentOpen: (e: boolean) => void;
 }
 
 export const useContentState = create<ContentStateProps>((set) => ({
@@ -32,6 +36,8 @@ export const useContentState = create<ContentStateProps>((set) => ({
   type: ContentType.YOUTUBE,
   tags: [],
   searchQuery: "",
+  currentFilter: "dashboard",
+  isCreateContentOpen: false,
   setIsPreview: (isPreview) => set({ isPreview }),
   setTitle: (title) => set({ title }),
   setType: (type) => set({ type }),
@@ -39,4 +45,6 @@ export const useContentState = create<ContentStateProps>((set) => ({
   setLink: (link) => set({ link }),
   setTags: (tags) => set({ tags }),
   setSearchQuery: (searchQuery) => set({ searchQuery }),
+  setCurrentFilter: (currentFilter) => set({ currentFilter }),
+  setIsCreateContentOpen: (isCreateContentOpen) => set({ isCreateContentOpen }),
 }));

@@ -108,7 +108,7 @@ export const VectorSearchChatbox = () => {
                   className="animate-in fade-in slide-in-from-bottom-2 duration-500"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  {message.type === "query" ? (
+                  {message.role === "user" ? (
                     <div className="flex justify-end mb-6">
                       <div className="max-w-[85%] lg:max-w-[75%]">
                         <div className="bg-blue-600 text-white rounded-3xl rounded-tr-md px-5 py-3 shadow-md hover:shadow-lg transition-shadow">
@@ -125,12 +125,15 @@ export const VectorSearchChatbox = () => {
                           <BrainCircuit className="h-5 w-5 text-blue-500" />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm text-muted-foreground mb-3">
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap mb-3">
                             {message.content}
                           </div>
-                          {message.results && message.results.length > 0 && (
+                          {message.sources && message.sources.length > 0 && (
                             <div className="space-y-3 mt-4">
-                              {message.results.map((result) => (
+                              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                Sources
+                              </div>
+                              {message.sources.map((result) => (
                                 <Card
                                   key={result.id}
                                   className={`border-l-4 hover:shadow-md transition-shadow ${

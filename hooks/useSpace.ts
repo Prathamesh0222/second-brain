@@ -9,13 +9,14 @@ import {
 } from "@/types/space-type";
 import { queryClient } from "@/providers/CustomProvider";
 
-export const useSpaces = () => {
+export const useSpaces = (options?: { enabled?: boolean }) => {
   return useQuery<Space[]>({
     queryKey: ["spaces"],
     queryFn: async () => {
       const response = await axios.get("/api/space");
       return response.data;
     },
+    enabled: options?.enabled ?? true,
   });
 };
 

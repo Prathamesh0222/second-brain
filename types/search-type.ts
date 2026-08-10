@@ -38,8 +38,8 @@ export interface SearchResponse {
 
 export interface Message {
   id: string;
-  type: "query" | "results";
+  role: "user" | "assistant";
   content: string;
-  results?: SearchResult[];
+  sources?: SearchResult[];
   timestamp: string;
 }

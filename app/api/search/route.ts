@@ -1,6 +1,7 @@
 import { authOptions } from "@/config/auth.config";
 import { generateEmbedding } from "@/lib/embedding";
 import { rerankResults } from "@/services/ai/Reranker";
+import { synthesizeAnswer, ChatTurn } from "@/services/ai/ChatSynthesis";
 import { SearchResult } from "@/types/search-type";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,7 +47,7 @@ export const POST = async (req: NextRequest) => {
   }
 
   try {
-    const { query, limit = 5 } = await req.json();
+    const { query, limit = 5, history } = await req.json();
     if (!query || typeof query !== "string") {
       return NextResponse.json(
         {
@@ -58,16 +59,22 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
+    const chatHistory: ChatTurn[] = Array.isArray(history) ? history : [];
+    const isChatMode = chatHistory.length > 0;
+
     const userId = session.user.id;
 
     const searchCacheKey = `search:${userId}:${hashKey(query)}:${limit}`;
-    const cachedResults = await getCached<{
-      results: SearchResult[];
-      query: string;
-    }>(searchCacheKey);
 
-    if (cachedResults) {
-      return NextResponse.json(cachedResults);
+    if (!isChatMode) {
+      const cachedResults = await getCached<{
+        results: SearchResult[];
+        query: string;
+      }>(searchCacheKey);
+
+      if (cachedResults) {
+        return NextResponse.json(cachedResults);
+      }
     }
 
     let queryEmbedding: number[];
@@ -163,6 +170,23 @@ export const POST = async (req: NextRequest) => {
     })) as SearchResult[];
 
     const rerankedResults = await rerankResults(query, enrichedResults);
+
+    if (isChatMode) {
+      const { answer, citedIndexes } = await synthesizeAnswer(
+        query,
+        chatHistory,
+        rerankedResults
+      );
+
+      const chatResponseData = {
+        results: rerankedResults,
+        query,
+        answer,
+        sources: citedIndexes.map((i) => rerankedResults[i]),
+      };
+
+      return NextResponse.json(chatResponseData);
+    }
 
     const responseData = {
       results: rerankedResults,

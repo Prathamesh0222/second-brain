@@ -25,7 +25,6 @@ import { Textarea } from "./ui/textarea";
 
 export const CreateContent = () => {
   const [tagsInput, setTagsInput] = useState<string>("");
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [notesDescription, setNotesDescription] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,12 +35,14 @@ export const CreateContent = () => {
     link,
     tags,
     description,
+    isCreateContentOpen: isSheetOpen,
     setTitle,
     setTags,
     setType,
     setLink,
     setDescription,
     setIsPreview,
+    setIsCreateContentOpen: setIsSheetOpen,
   } = useContentState();
   const queryClient = useQueryClient();
 
